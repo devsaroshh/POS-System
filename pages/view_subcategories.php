@@ -51,10 +51,12 @@ $subcategories = $stmt->fetchAll();
                 <td>
                     <div class="button-group">
                         <a href="edit_subcategory.php?id=<?php echo $subcategory['id']; ?>" style="background-color: #5cb85c; color: white; text-align: center; padding: 5px 10px; border-radius: 4px;">Edit</a>
+                        <?php if ($role !== 'editor'): ?>
                         <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');" style="display:inline;" id="deleteForm-<?php echo $subcategory['id']; ?>">
                             <input type="hidden" name="delete_id" value="<?php echo $subcategory['id']; ?>">
                             <a href="javascript:void(0);" onclick="document.getElementById('deleteForm-<?php echo $subcategory['id']; ?>').submit();" style="background-color: #d9534f; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; text-decoration: none;">Delete</a>
                         </form>
+                        <?php endif?>
                     </div>
                 </td>
             </tr>

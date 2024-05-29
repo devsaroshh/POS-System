@@ -38,8 +38,8 @@
         }
 
         .content {
-            padding: 16px;
             margin-left: 250px; /* Adjust based on sidebar width */
+            padding: 16px;
         }
 
         .dropbtn {
@@ -84,76 +84,137 @@
             display: block;
         }
         #logout{
-
             color: white;
             padding: 12px 16px;
             text-decoration: none;
             display: block;
-        }
 
-        /* Responsive styles */
-        @media screen and (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                padding-top: 0;
-            }
-            .content {
-                margin-left: 0;
-            }
         }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2 style="color: white;text-align:center">Welcome</h2>
+    <?php
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
 
-        <div class="dropdown">
-            <button class="dropbtn">User Management</button>
-            <div class="dropdown-content">
-                <a href="userManagement.php">Add User</a>
-                <!-- <a href="view_products.php">View Products</a> -->
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn">Manage Products</button>
-            <div class="dropdown-content">
-                <a href="add_product.php">Add New Product</a>
-                <a href="view_products.php">View Products</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn">Sales</button>
-            <div class="dropdown-content">
-                <a href="add_sale.php">Add Sale</a>
-                <a href="view_sales.php">View Sales</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn">Inventory</button>
-            <div class="dropdown-content">
-                <a href="add_inventory_change.php">Add Inventory</a>
-                <a href="view_inventory.php">View Inventory</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn">Categories</button>
-            <div class="dropdown-content">
-                <a href="add_category.php">Add New Category</a>
-                <a href="view_categories.php">View Categories</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn">Subcategories</button>
-            <div class="dropdown-content">
-                <a href="add_subcategory.php">Add New Subcategory</a>
-                <a href="view_subcategories.php">View Subcategories</a>
-            </div>
-        </div>
-        <a href="logout.php" id="logout">Logout</a>
-    </div>
+    include('../includes/db.php');
 
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../index.php');
+        exit();
+    }
+
+    $user_id = $_SESSION['user_id'];
+    $stmt = $pdo->prepare('SELECT role FROM users WHERE id = ?');
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch();
+
+    $role = $user['role'] ?? '';
+
+    if ($role === 'admin') { ?>
+        <div class="sidebar">
+            <h2 style="color: white; text-align:center">Welcome</h2>
+            <div class="dropdown">
+                <button class="dropbtn">User Management</button>
+                <div class="dropdown-content">
+                    <a href="userManagement.php">Add User</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Manage Products</button>
+                <div class="dropdown-content">
+                    <a href="add_product.php">Add New Product</a>
+                    <a href="view_products.php">View Products</a>
+                </div>
+            </div>
+            
+            <div class="dropdown">
+                <button class="dropbtn">Sales</button>
+                <div class="dropdown-content">
+                    <a href="add_sale.php">Add Sale</a>
+                    <a href="view_sales.php">View Sales</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Inventory</button>
+                <div class="dropdown-content">
+                    <a href="add_inventory_change.php">Add Inventory</a>
+                    <a href="view_inventory.php">View Inventory</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Categories</button>
+                <div class="dropdown-content">
+                    <a href="add_category.php">Add New Category</a>
+                    <a href="view_categories.php">View Categories</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Subcategories</button>
+                <div class="dropdown-content">
+                    <a href="add_subcategory.php">Add New Subcategory</a>
+                    <a href="view_subcategories.php">View Subcategories</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Manage Orders</button>
+                <div class="dropdown-content">
+                <a href="add_order.php">Add Order</a>
+                    <a href="view_orders.php">View Orders</a>
+                </div>
+            </div>
+            <a href="logout.php" id="logout">Logout</a>
+        </div>
+    <?php } elseif ($role === 'editor') { ?>
+        <div class="sidebar">
+            <h2 style="color: white; text-align:center">Welcome</h2>
+            <div class="dropdown">
+                <button class="dropbtn">Manage Products</button>
+                <div class="dropdown-content">
+                    <a href="view_products.php">Edit Products</a>
+                    <!-- <a href="view_products.php">View Products</a> -->
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Manage Orders</button>
+                <div class="dropdown-content">
+                <a href="add_order.php">Add Order</a>
+                    <a href="view_orders.php">Edit Orders</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Sales</button>
+                <div class="dropdown-content">
+                    <a href="add_sale.php">Add Sale</a>
+                    <a href="view_sales.php">View Sales</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Inventory</button>
+                <div class="dropdown-content">
+                    <a href="add_inventory_change.php">Add Inventory</a>
+                    <a href="view_inventory.php">View Inventory</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Categories</button>
+                <div class="dropdown-content">
+                    <!-- <a href="add_category.php">Edit Category</a> -->
+                    <a href="view_categories.php">Edit Category</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Subcategories</button>
+                <div class="dropdown-content">
+                    <!-- <a href="edit_subcategory.php">Edit Subcategory</a> -->
+                    <a href="view_subcategories.php">Edit Subcategory</a>
+                </div>
+            </div>
+            <a href="logout.php" id="logout">Logout</a>
+        </div>
+    <?php } ?>
 </body>
+
 </html>

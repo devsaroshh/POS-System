@@ -42,7 +42,9 @@ $inventory_changes = $stmt->fetchAll();
             <th>Change Type</th>
             <th>Quantity</th>
             <th>Change Date</th>
+            <?php if ($role !== 'editor'): ?>
             <th>Action</th>
+            <?php endif?>
         </tr>
         <?php foreach ($inventory_changes as $change) : ?>
             <tr>
@@ -51,12 +53,14 @@ $inventory_changes = $stmt->fetchAll();
                 <td><?php echo htmlspecialchars($change['change_type']); ?></td>
                 <td><?php echo htmlspecialchars($change['quantity']); ?></td>
                 <td><?php echo htmlspecialchars($change['change_date']); ?></td>
+                <?php if ($role !== 'editor'): ?>
                 <td>
                     <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                         <input type="hidden" name="delete_id" value="<?php echo $change['id']; ?>">
                         <button type="submit" style="background-color: #5cb85c; color: white; border: none; padding: 5px 10px; border-radius: 4px;">Delete</button>
                     </form>
                 </td>
+                <?php endif?>
 
             </tr>
         <?php endforeach; ?>

@@ -7,7 +7,13 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
+$user_id = $_SESSION['user_id'];
+$stmt = $pdo->prepare('SELECT role FROM users WHERE id = ?');
+$stmt->execute([$user_id]);
+$user = $stmt->fetch();
+$role = $user['role'] ?? '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && $role !== 'editor') {
     $delete_id = $_POST['delete_id'];
 
     $pdo->beginTransaction();
@@ -57,16 +63,18 @@ $categories = $stmt->fetchAll();
                 <td>
                     <div class="button-group">
                         <a href="edit_category.php?id=<?php echo $category['id']; ?>" style="background-color: #5cb85c; color: white; text-align: center; padding: 5px 10px; border-radius: 4px;">Edit</a>
+                        <?php if ($role !== 'editor'): ?>
                         <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');" style="display:inline;" id="deleteForm-<?php echo $category['id']; ?>">
                             <input type="hidden" name="delete_id" value="<?php echo $category['id']; ?>">
                             <a href="javascript:void(0);" onclick="document.getElementById('deleteForm-<?php echo $category['id']; ?>').submit();" style="background-color: #d9534f; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; text-decoration: none;">Delete</a>
                         </form>
+                        <?php endif; ?>
                     </div>
                 </td>
             </tr>
         <?php endforeach; ?>
     </table>
     <a href="dashboard.php">Back to Dashboard</a>
-        </div>
+</div>
 </body>
 </html>

@@ -15,9 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Default role for new users
         $role = 'editor';
-
-        // Add the user to the database
-        $stmt = $pdo->prepare('INSERT INTO users (username, password, role) VALUES (?, ?, ?)');
+        // Add the user to the database with MD5 hashed password
+        $stmt = $pdo->prepare('INSERT INTO users (username, password, role) VALUES (?, MD5(?), ?)');
         if ($stmt->execute([$username, $password, $role])) {
             // User registered successfully
             $_SESSION['success_message'] = 'User registered successfully.';
@@ -89,11 +88,11 @@ $total_pages = ceil($total_users / $limit);
     <?php include('../includes/sidebar.php'); ?>
     <div class="content">
         <h2>User Management</h2>
-        <?php if (isset($_SESSION['success_message'])): ?>
+        <?php if (isset($_SESSION['success_message'])) : ?>
             <div class="success-message"><?php echo $_SESSION['success_message']; ?></div>
             <?php unset($_SESSION['success_message']); ?>
         <?php endif; ?>
-        <?php if (isset($_SESSION['error_message'])): ?>
+        <?php if (isset($_SESSION['error_message'])) : ?>
             <div class="error-message"><?php echo $_SESSION['error_message']; ?></div>
             <?php unset($_SESSION['error_message']); ?>
         <?php endif; ?>
@@ -105,8 +104,8 @@ $total_pages = ceil($total_users / $limit);
                 <th>Permission</th>
                 <th>Action</th>
             </tr>
-            <?php foreach ($users as $user): ?>
-                <?php if ($user['role'] !== 'admin'): ?> 
+            <?php foreach ($users as $user) : ?>
+                <?php if ($user['role'] !== 'admin') : ?>
                     <tr>
                         <td><?php echo $user['id']; ?></td>
                         <td><?php echo htmlspecialchars($user['username']); ?></td>
@@ -120,10 +119,8 @@ $total_pages = ceil($total_users / $limit);
                             <br>
                             <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                                 <input type="hidden" name="editor_id" value="<?php echo $user['id']; ?>">
-                                <select  style="   width: 30%; padding: 8px; margin-bottom: 15px;border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;resize: vertical;" name="permission">
+                                <select style="   width: 30%; padding: 8px; margin-bottom: 15px;border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;resize: vertical;" name="permission">
                                     <option value="edit">Edit</option>
-                                    <option value="view">View</option>
-                                    <option value="delete">Delete</option>
                                 </select>
                                 <button type="submit">Assign Permission</button>
                             </form>
@@ -135,21 +132,21 @@ $total_pages = ceil($total_users / $limit);
 
         <!-- Pagination links -->
         <div class="pagination">
-            <?php if ($total_pages > 1): ?>
-                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <?php if ($total_pages > 1) : ?>
+                <?php for ($i = 1; $i <= $total_pages; $i++) : ?>
                     <a href="?page=<?php echo $i; ?>" <?php if ($i === $page) echo 'class="active"'; ?>><?php echo $i; ?></a>
                 <?php endfor; ?>
             <?php endif; ?>
         </div>
 
-       
-        <h2>Register New User</h2>
+
+        <h2>Add Editor</h2>
         <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
             <label for="username">Username:</label>
-            <input  style="width: 50%;padding: 8px; margin-bottom: 15px;border: 1px solid #ccc;border-radius: 4px;box-sizing: border-box;resize: vertical;"  type="text" id="username" name="username" required>
+            <input style="width: 50%;padding: 8px; margin-bottom: 15px;border: 1px solid #ccc;border-radius: 4px;box-sizing: border-box;resize: vertical;" type="text" id="username" name="username" required>
             <br>
             <label for="password">Password:</label>
-            <input style="width: 50%;padding: 8px; margin-bottom: 15px;border: 1px solid #ccc;border-radius: 4px;box-sizing: border-box;resize: vertical;"  type="password" id="password" name="password" required>
+            <input style="width: 50%;padding: 8px; margin-bottom: 15px;border: 1px solid #ccc;border-radius: 4px;box-sizing: border-box;resize: vertical;" type="password" id="password" name="password" required>
             <br>
             <input type="hidden" name="register" value="1">
             <br>
