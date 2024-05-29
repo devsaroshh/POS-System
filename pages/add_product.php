@@ -3,7 +3,7 @@ session_start();
 include('../includes/db.php');
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit();
 }
 
@@ -12,38 +12,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = $_POST['description'];
     $price = $_POST['price'];
     $stock = $_POST['stock'];
+    $category_id = $_POST['category'];
+    $subcategory_id = $_POST['subcategory'];
 
-    $stmt = $pdo->prepare('INSERT INTO products (name, description, price, stock) VALUES (?, ?, ?, ?)');
-    $stmt->execute([$name, $description, $price, $stock]);
+    $stmt = $pdo->prepare('INSERT INTO products (name, description, price, stock, category_id, subcategory_id) VALUES (?, ?, ?, ?, ?, ?)');
+    $stmt->execute([$name, $description, $price, $stock, $category_id, $subcategory_id]);
 
     header('Location: view_products.php');
+    exit();
 }
+
+$categories = $pdo->query('SELECT * FROM categories')->fetchAll();
+$subcategories = $pdo->query('SELECT * FROM subcategories')->fetchAll();
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Add Product</title>
-    <link rel="stylesheet" type="text/css" href="../public/css/addP.css">
-
 </head>
 <body>
-    <div class="container">
-        <h2>Add Product</h2>
+<?php include('../includes/sidebar.php'); ?>
+<div class="content" style="margin-left: 250px; padding: 20px;">
+
+    <div class="container" style="max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #6BA9B9;">Add Product</h2>
         <form method="POST" action="add_product.php">
-            <label for="name">Product Name:</label>
-            <input type="text" id="name" name="name" required>
+            <label for="name" style="display: block; margin-bottom: 5px; color: #6BA9B9;">Product Name:</label>
+            <input type="text" id="name" name="name" required style="width: 100%; padding: 8px; border: 1px solid #6BA9B9; border-radius: 4px; margin-bottom: 10px;">
             <br>
-            <label for="description">Description:</label>
-            <textarea id="description" name="description"></textarea>
+            <label for="description" style="display: block; margin-bottom: 5px; color: #6BA9B9;">Description:</label>
+            <textarea id="description" name="description" style="width: 100%; padding: 8px; border: 1px solid #6BA9B9; border-radius: 4px; margin-bottom: 10px;"></textarea>
             <br>
-            <label for="price">Price:</label>
-            <input type="number" step="0.01" id="price" name="price" required>
+            <label for="price" style="display: block; margin-bottom: 5px; color: #6BA9B9;">Price:</label>
+            <input type="number" step="0.01" id="price" name="price" required style="width: 100%; padding: 8px; border: 1px solid #6BA9B9; border-radius: 4px; margin-bottom: 10px;">
             <br>
-            <label for="stock">Stock:</label>
-            <input type="number" id="stock" name="stock" required>
+            <label for="stock" style="display: block; margin-bottom: 5px; color: #6BA9B9;">Stock:</label>
+            <input type="number" id="stock" name="stock" required style="width: 100%; padding: 8px; border: 1px solid #6BA9B9; border-radius: 4px; margin-bottom: 10px;">
             <br>
-            <button type="submit">Add Product</button>
+            <label for="category" style="display: block; margin-bottom: 5px; color: #6BA9B9;">Category:</label>
+            <select id="category" name="category" required style="width: 100%; padding: 8px; border: 1px solid #6BA9B9; border-radius: 4px; margin-bottom: 10px;">
+                <?php foreach ($categories as $category): ?>
+                    <option value="<?php echo $category['id']; ?>"><?php echo htmlspecialchars($category['name']); ?></option>
+                <?php endforeach; ?>
+            </select>
+            <br>
+            <label for="subcategory" style="display: block; margin-bottom: 5px; color: #6BA9B9;">Subcategory:</label>
+            <select id="subcategory" name="subcategory" required style="width: 100%; padding: 8px; border: 1px solid #6BA9B9; border-radius: 4px; margin-bottom: 10px;">
+                <?php foreach ($subcategories as $subcategory): ?>
+                    <option value="<?php echo $subcategory['id']; ?>"><?php echo htmlspecialchars($subcategory['name']); ?></option>
+                <?php endforeach; ?>
+            </select>
+            <br>
+            <button type="submit" style="background-color: #6BA9B9; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s, color 0.3s;">Add Product</button>
         </form>
     </div>
+
+</div>
 </body>
 </html>

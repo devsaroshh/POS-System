@@ -1,0 +1,44 @@
+/* CSS for Add Category page */
+.container {
+    margin-left: 250px; /* Adjust based on sidebar width */
+    padding: 20px;
+}
+
+h2 {
+    color: #6BA9B9; /* Heading color */
+}
+
+label {
+    color: #6BA9B9; /* Label color */
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1px solid #6BA9B9; /* Input border color */
+    border-radius: 5px;
+}
+
+button[type="submit"] {
+    background-color: #6BA9B9; /* Button color */
+    color: white; /* Button text color */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #6BA9B9; /* Hover color */
+    color: white; /* Text color on hover */
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+    .container {
+        margin-left: 0; /* Adjust margin for small screens */
+    }
+}

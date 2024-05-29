@@ -1,0 +1,54 @@
+
+        /* CSS for View Sales page */
+        .content {
+            margin-left: 250px; /* Adjust based on sidebar width */
+            padding: 20px;
+        }
+
+        h1 {
+            color: #6BA9B9; /* Heading color */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #6BA9B9; /* Table border color */
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #6BA9B9; /* Header background color */
+            color: white; /* Header text color */
+        }
+
+        button[type="submit"] {
+            background-color: #5cb85c; /* Button background color */
+            color: white; /* Button text color */
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+        }
+
+        button[type="submit"]:hover {
+            background-color: #4cae4c; /* Hover color */
+        }
+
+        /* Responsive styles */
+        @media screen and (max-width: 768px) {
+            .content {
+                margin-left: 0; /* Adjust margin for small screens */
+            }
+
+            table {
+                margin-top: 10px; /* Adjust margin for small screens */
+            }
+        }
+  

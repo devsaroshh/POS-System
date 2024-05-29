@@ -3,7 +3,7 @@ session_start();
 include('../includes/db.php');
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit();
 }
 
@@ -28,23 +28,25 @@ $products = $stmt->fetchAll();
 
 <head>
     <title>Add Inventory Change</title>
-    <link rel="stylesheet" type="text/css" href="../public/css/addI.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/editProduct.css">
 
 </head>
 
 <body>
+<?php include('../includes/sidebar.php'); ?>
+<div class="content">
     <div class="container">
         <h2>Add Inventory Change</h2>
         <form method="POST" action="add_inventory_change.php">
             <label for="product_id">Product:</label>
-            <select id="product_id" name="product_id" required>
+            <select style="   width: 100%; padding: 8px; margin-bottom: 15px;border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;resize: vertical;" id="product_id" name="product_id" required>
                 <?php foreach ($products as $product) : ?>
                     <option value="<?php echo $product['id']; ?>"><?php echo htmlspecialchars($product['name']); ?></option>
                 <?php endforeach; ?>
             </select>
             <br>
             <label for="change_type">Change Type:</label>
-            <select id="change_type" name="change_type" required>
+            <select  style="   width: 100%; padding: 8px; margin-bottom: 15px;border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;resize: vertical;" id="change_type" name="change_type" required>
                 <option value="add">In</option>
                 <option value="remove">Out</option>
             </select>
@@ -56,6 +58,8 @@ $products = $stmt->fetchAll();
             <button type="submit">Add Inventory Change</button>
         </form>
     </div>
+    </div>
+
 </body>
 
 </html>

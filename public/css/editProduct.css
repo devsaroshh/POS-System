@@ -1,0 +1,62 @@
+        /* CSS for Edit Product page */
+        .content {
+            margin-left: 250px; /* Adjust based on sidebar width */
+            padding: 20px;
+        }
+
+        .container {
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        h2 {
+            color: #6BA9B9; /* Heading color */
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        textarea {
+            height: 150px; /* Adjust height as needed */
+        }
+
+        button[type="submit"] {
+            background-color: #6BA9B9; /* Button background color */
+            color: white; /* Button text color */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+        }
+
+        button[type="submit"]:hover {
+            background-color: #5a8b98; /* Hover color */
+        }
+
+        /* Responsive styles */
+        @media screen and (max-width: 768px) {
+            .content {
+                margin-left: 0; /* Adjust margin for small screens */
+            }
+
+            .container {
+                width: 90%; /* Adjust width for small screens */
+            }
+        }
+ 

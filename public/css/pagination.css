@@ -1,0 +1,63 @@
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+}
+
+.pagination a.active {
+    background-color: #5a8b98;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {background-color: #ddd;}/* Form container */
+.form-container {
+    width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form labels */
+.form-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Form input fields */
+.form-container input[type="text"],
+.form-container input[type="password"] {
+    width: calc(100% - 12px);
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Submit button */
+.form-container button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Submit button hover effect */
+.form-container button[type="submit"]:hover {
+    background-color: #45a049;
+}

@@ -3,7 +3,7 @@ session_start();
 include('../includes/db.php');
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit();
 }
 
@@ -28,10 +28,12 @@ $inventory_changes = $stmt->fetchAll();
 
 <head>
     <title>View Inventory</title>
-    <link rel="stylesheet" type="text/css" href="../public/css/viewI.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/viewProduct.css">
 </head>
 
 <body>
+<?php include('../includes/sidebar.php'); ?>
+<div class="content">
     <h1>Inventory Changes</h1>
     <table>
         <tr>
@@ -60,6 +62,7 @@ $inventory_changes = $stmt->fetchAll();
         <?php endforeach; ?>
     </table>
     <a href="dashboard.php">Back to Dashboard</a>
+</div>
 </body>
 
 </html>

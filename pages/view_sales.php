@@ -1,6 +1,10 @@
 <?php
 session_start();
 include('../includes/db.php');
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../index.php');
+    exit();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     $delete_id = $_POST['delete_id'];
@@ -28,10 +32,12 @@ if (!$sales) {
 
 <head>
     <title>View Sales</title>
-    <link rel="stylesheet" type="text/css" href="../public/css/viewS.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/viewProduct.css">
 </head>
 
 <body>
+<?php include('../includes/sidebar.php'); ?>
+<div class="content">
     <h1>Sales</h1>
     <table>
         <tr>
@@ -59,6 +65,7 @@ if (!$sales) {
         <?php endforeach; ?>
     </table>
     <a href="dashboard.php">Back to Dashboard</a>
+</div>
 </body>
 
 </html>

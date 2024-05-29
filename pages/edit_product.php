@@ -3,7 +3,7 @@ session_start();
 include('../includes/db.php');
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit();
 }
 
@@ -40,9 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Edit Product</title>
-    <link rel="stylesheet" type="text/css" href="../public/css/addP.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/editProduct.css">
 </head>
 <body>
+<?php include('../includes/sidebar.php'); ?>
+<div class="content">
     <div class="container">
         <h2>Edit Product</h2>
         <form method="POST" action="edit_product.php">
@@ -61,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <br>
             <button type="submit">Update Product</button>
         </form>
+    </div>
     </div>
 </body>
 </html>

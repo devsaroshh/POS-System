@@ -3,7 +3,7 @@ session_start();
 include('../includes/db.php');
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit();
 }
 
@@ -27,14 +27,16 @@ $products = $stmt->fetchAll();
 <html>
 <head>
     <title>Add Sale</title>
-    <link rel="stylesheet" type="text/css" href="../public/css/addS.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/editProduct.css">
 </head>
 <body>
+<?php include('../includes/sidebar.php'); ?>
+<div class="content">
     <div class="container">
         <h2>Add Sale</h2>
         <form method="POST" action="add_sale.php">
             <label for="product_id">Product:</label>
-            <select id="product_id" name="product_id" required>
+            <select style="   width: 100%; padding: 8px; margin-bottom: 15px;border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;resize: vertical;" id="product_id" name="product_id" required>
                 <?php foreach ($products as $product): ?>
                     <option value="<?php echo $product['id']; ?>"><?php echo htmlspecialchars($product['name']); ?></option>
                 <?php endforeach; ?>
@@ -48,6 +50,7 @@ $products = $stmt->fetchAll();
             <br>
             <button type="submit">Add Sale</button>
         </form>
+    </div>
     </div>
 </body>
 </html>
