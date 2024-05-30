@@ -33,8 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && $role
     exit();
 }
 
-// Pagination setup
-$subcategories_per_page = 10; // Number of subcategories to show per page
+$subcategories_per_page = 10; 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $subcategories_per_page;
 
