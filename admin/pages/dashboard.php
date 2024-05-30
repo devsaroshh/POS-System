@@ -24,6 +24,7 @@ $user = $stmt->fetch();
   
 <?php include('../includes/sidebar.php'); ?>
 
+
     <div class="content">
         <h1>Welcome To POS System</h1>
     </div>

@@ -64,8 +64,8 @@
             min-width: 160px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             z-index: 1;
-            width: 100%; /* Full width for dropdown content */
-            text-align: left; /* Align text to the left */
+            width: 100%; 
+            text-align: left; 
         }
 
         .dropdown-content a {
@@ -113,6 +113,7 @@
     $role = $user['role'] ?? '';
 
     if ($role === 'admin') { ?>
+
         <div class="sidebar">
             <h2 style="color: white; text-align:center">Welcome</h2>
             <div class="dropdown">
@@ -161,6 +162,12 @@
                 <button class="dropbtn">Manage Orders</button>
                 <div class="dropdown-content">
                 <!-- <a href="add_order.php">Add Order</a> -->
+                    <a href="view_orders.php">View Orders</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Alerts</button>
+                <div class="dropdown-content">
                     <a href="view_orders.php">View Orders</a>
                 </div>
             </div>
