@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ?>
-
+<link rel="stylesheet" type="text/css" href="css/navbar.css">
 <nav>
     <ul>
         <li><a href="index.php">Products</a></li>
@@ -17,34 +17,3 @@ if (session_status() == PHP_SESSION_NONE) {
         <?php endif; ?>
     </ul>
 </nav>
-
-<style>
-nav {
-    background-color: #007bff;
-    padding: 10px;
-}
-
-nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-}
-
-nav ul li {
-    margin: 0 10px;
-}
-
-nav ul li a {
-    color: #fff;
-    text-decoration: none;
-    padding: 10px 20px;
-    display: block;
-}
-
-nav ul li a:hover {
-    background-color: #0056b3;
-    border-radius: 5px;
-}
-</style>

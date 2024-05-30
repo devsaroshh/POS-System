@@ -18,32 +18,24 @@ if (empty($cart)) {
 $pdo->beginTransaction();
 
 try {
-    // Calculate the total price
     $total_price = 0;
     foreach ($cart as $product_id => $quantity) {
         $stmt = $pdo->prepare("SELECT price FROM products WHERE id = ?");
         $stmt->execute([$product_id]);
         $product = $stmt->fetch();
-        
-        // Check if the price is valid
-        if ($product && isset($product['price'])) {
+                if ($product && isset($product['price'])) {
             $total_price += $product['price'] * $quantity;
         } else {
             throw new Exception("Invalid product price for product ID: $product_id");
         }
     }
-
-    // Insert the order into the orders table
     $stmt = $pdo->prepare("INSERT INTO orders (customer_id, total_price, status, created_at) VALUES (?, ?, 'pending', NOW())");
     $stmt->execute([$customer_id, $total_price]);
     $order_id = $pdo->lastInsertId();
 
-    // Insert each product into the order_items table
     foreach ($cart as $product_id => $quantity) {
         $stmt = $pdo->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, (SELECT price FROM products WHERE id = ?))");
         $stmt->execute([$order_id, $product_id, $quantity, $product_id]);
-
-        // Update the stock of the product
         $stmt = $pdo->prepare("UPDATE products SET stock = stock - ? WHERE id = ?");
         $stmt->execute([$quantity, $product_id]);
     }

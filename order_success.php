@@ -13,7 +13,7 @@ if (!isset($_SESSION['customer_id'])) {
     <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-    <?php include('includes/navbar.php'); // Include the navbar ?>
+    <?php include('includes/navbar.php');?>
 
     <div class="container">
         <h2>Order Success</h2>

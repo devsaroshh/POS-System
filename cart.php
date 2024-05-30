@@ -31,7 +31,7 @@ if (!empty($cart)) {
     <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-    <?php include('includes/navbar.php'); // Include the navbar ?>
+    <?php include('includes/navbar.php'); ?>
 
     <div class="container">
         <h2>Cart</h2>
@@ -45,7 +45,7 @@ if (!empty($cart)) {
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Subtotal</th>
-                        <th>Action</th> <!-- New column for Remove button -->
+                        <th>Action</th> 
                     </tr>
                 </thead>
                 <tbody>
@@ -68,7 +68,7 @@ if (!empty($cart)) {
                     <tr>
                         <td colspan="3">Total</td>
                         <td>$<?php echo htmlspecialchars($total_price); ?></td>
-                        <td></td> <!-- Empty column for alignment -->
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>
