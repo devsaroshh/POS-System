@@ -128,7 +128,7 @@ if (!$products) {
                                         <option value="whole">Delete Entire Product</option>
                                         <option value="quantity">Delete Specific Quantity</option>
                                     </select>
-                                    <input style="   width: 20%; padding: 8px; margin-bottom: 15px;border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;resize: vertical;" type="number" name="quantity" placeholder="Quantity">
+                                    <input min="0" style="   width: 20%; padding: 8px; margin-bottom: 15px;border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;resize: vertical;" type="number" name="quantity" placeholder="Quantity">
                                     <button style=" background-color: #6BA9B9; color: white; padding: 10px 20px; border: none;border-radius: 4px;cursor: pointer; transition: background-color 0.3s, color 0.3s;" type="submit">Delete</button>
                                 </form>
 

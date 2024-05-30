@@ -47,8 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label  style="color:#6BA9B9;"  for="status">Status</label>
         <select style="   width: 50%; padding: 8px; margin-bottom: 15px;border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;resize: vertical;"  name="status" id="status">
             <option value="Pending" <?php echo $order['status'] == 'Pending' ? 'selected' : ''; ?>>Pending</option>
-            <option value="Shipped" <?php echo $order['status'] == 'Shipped' ? 'selected' : ''; ?>>Shipped</option>
-            <option value="Delivered" <?php echo $order['status'] == 'Delivered' ? 'selected' : ''; ?>>Delivered</option>
+            <option value="completed" <?php echo $order['status'] == 'completed' ? 'selected' : ''; ?>>completed</option>
+            <option value="cancelled" <?php echo $order['status'] == 'cancelled' ? 'selected' : ''; ?>>cancelled</option>
         </select>
         <button type="submit">Update</button>
     </form>

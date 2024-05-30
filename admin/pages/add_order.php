@@ -7,7 +7,6 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Fetch products to populate the dropdown
 $stmt = $pdo->query('SELECT id, name, price FROM products');
 $products = $stmt->fetchAll();
 
@@ -15,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $product_id = $_POST['product_id'];
     $quantity = $_POST['quantity'];
 
-    // Fetch product price
     $stmt = $pdo->prepare('SELECT price FROM products WHERE id = ?');
     $stmt->execute([$product_id]);
     $product = $stmt->fetch();

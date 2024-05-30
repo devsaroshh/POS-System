@@ -12,10 +12,12 @@ $stmt = $pdo->prepare('SELECT role FROM users WHERE id = ?');
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 $role = $user['role'] ?? '';
-
-$stmt = $pdo->query('SELECT orders.id, products.name AS product_name, orders.quantity, orders.total_price, orders.status, orders.created_at FROM orders 
-                     JOIN products ON orders.product_id = products.id');
+$stmt = $pdo->query('SELECT orders.id, products.name AS product_name, order_items.quantity, order_items.price AS total_price, orders.status, orders.created_at 
+                     FROM orders 
+                     JOIN order_items ON orders.id = order_items.order_id
+                     JOIN products ON order_items.product_id = products.id');
 $orders = $stmt->fetchAll();
+
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +40,11 @@ $orders = $stmt->fetchAll();
             <th>Status</th>
             <th>Action</th>
         </tr>
-        <?php foreach ($orders as $order): ?>
+        <?php 
+        $totalEarned = 0; // Initialize total earned variable
+        foreach ($orders as $order): 
+            $totalEarned += $order['total_price']; // Add total price of each order to total earned
+        ?>
             <tr>
                 <td><?php echo htmlspecialchars($order['id']); ?></td>
                 <td><?php echo htmlspecialchars($order['product_name']); ?></td>
@@ -58,6 +64,14 @@ $orders = $stmt->fetchAll();
                 </td>
             </tr>
         <?php endforeach; ?>
+        <tr>
+            <td colspan="2"></td>
+            <td></td>
+            <td>Total Earned: $<?php echo htmlspecialchars($totalEarned); ?></td>
+            <td></td>
+            <td></td>
+
+        </tr>
     </table>
     <a href="dashboard.php">Back to Dashboard</a>
 </div>

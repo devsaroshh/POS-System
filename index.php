@@ -1,45 +1,37 @@
 <?php
 session_start();
-include('includes/db.php');
+include('admin/includes/db.php');
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
-
-    $stmt = $pdo->prepare("SELECT * FROM customers WHERE username = ?");
-    $stmt->execute([$username]);
-    $customer = $stmt->fetch();
-
-    if ($customer && password_verify($password, $customer['password'])) {
-        $_SESSION['customer_id'] = $customer['id'];
-        $_SESSION['customer_username'] = $customer['username'];
-        header('Location: index.php');
-        exit();
-    } else {
-        $error = "Invalid username or password.";
-    }
-}
+$stmt = $pdo->query("SELECT * FROM products WHERE stock > 0");
+$products = $stmt->fetchAll();
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Customer Login</title>
+    <title>Products</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
+    <?php include('includes/navbar.php');?>
+
     <div class="container">
-        <h2>Login</h2>
-        <?php if (isset($error)) echo "<p style='color: red;'>$error</p>"; ?>
-        <form method="POST" action="login.php">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            <br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <br>
-            <button type="submit">Login</button>
-        </form>
+        <h2>Products</h2>
+        <div class="products">
+            <?php foreach ($products as $product): ?>
+                <div class="product">
+                    <h3><?php echo htmlspecialchars($product['name']); ?></h3>
+                    <p><?php echo htmlspecialchars($product['description']); ?></p>
+                    <p>Price: $<?php echo htmlspecialchars($product['price']); ?></p>
+                    <form method="POST" action="add_to_cart.php">
+                        <input type="hidden" name="product_id"  value="<?php echo $product['id']; ?>">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" min="1" name="quantity" value="1" min="1" max="<?php echo $product['stock']; ?>" required>
+                        <button type="submit">Add to Cart</button>
+                    </form>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 </body>
 </html>

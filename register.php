@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('includes/db.php');
+include('admin/includes/db.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username']);
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html>
 <head>
     <title>Customer Registration</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/register.css">
 </head>
 <body>
     <div class="container">
@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
             <br>
+            <label>Already register ? then <a href="login.php">please Login</a></label>
             <button type="submit">Register</button>
         </form>
     </div>

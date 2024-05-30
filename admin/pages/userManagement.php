@@ -6,26 +6,19 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: ../index.php');
     exit();
 }
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['register'])) {
-        // User registration
         $username = $_POST['username'];
         $password = $_POST['password'];
 
-        // Default role for new users
         $role = 'editor';
-        // Add the user to the database with MD5 hashed password
         $stmt = $pdo->prepare('INSERT INTO users (username, password, role) VALUES (?, MD5(?), ?)');
         if ($stmt->execute([$username, $password, $role])) {
-            // User registered successfully
             $_SESSION['success_message'] = 'User registered successfully.';
         } else {
-            // Error registering user
             $_SESSION['error_message'] = 'Failed to register user. Please try again.';
         }
     } elseif (isset($_POST['delete'])) {
-        // Delete user
         $user_id = $_POST['user_id'];
         $stmt = $pdo->prepare('DELETE FROM users WHERE id = ?');
         if ($stmt->execute([$user_id])) {
@@ -34,17 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['error_message'] = 'Failed to delete user. Please try again.';
         }
     } else {
-        // Assign permission to editor if permission is valid and user is not an admin
         $editor_id = $_POST['editor_id'];
         $permission = $_POST['permission'];
 
         if ($permission !== 'admin' && $permission !== 'editor') {
             $stmt = $pdo->prepare('UPDATE users SET permission = ? WHERE id = ?');
             if ($stmt->execute([$permission, $editor_id])) {
-                // Permission assigned successfully
                 $_SESSION['success_message'] = 'Permission assigned successfully.';
             } else {
-                // Error assigning permission
                 $_SESSION['error_message'] = 'Failed to assign permission. Please try again.';
             }
         } else {
@@ -52,24 +42,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Redirect back to the same page
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit();
 }
 
-// Pagination logic
 $limit = 10;
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $offset = ($page - 1) * $limit;
-
-// Fetch users from the database with pagination
 $stmt = $pdo->prepare('SELECT * FROM users LIMIT :limit OFFSET :offset');
 $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $users = $stmt->fetchAll();
-
-// Count total number of users for pagination
 $total_users_stmt = $pdo->query('SELECT COUNT(*) FROM users');
 $total_users = $total_users_stmt->fetchColumn();
 $total_pages = ceil($total_users / $limit);

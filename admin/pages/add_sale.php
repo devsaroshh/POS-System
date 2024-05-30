@@ -43,7 +43,7 @@ $products = $stmt->fetchAll();
             </select>
             <br>
             <label for="quantity">Quantity:</label>
-            <input type="number" id="quantity" name="quantity" required>
+            <input min="0" type="number" id="quantity" name="quantity" required>
             <br>
             <label for="total_price">Total Price:</label>
             <input type="number" step="0.01" id="total_price" name="total_price" required>
