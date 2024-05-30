@@ -21,7 +21,7 @@ $user = $stmt->fetch();
     
 </head>
 <body>
-   
+  
 <?php include('../includes/sidebar.php'); ?>
 
     <div class="content">

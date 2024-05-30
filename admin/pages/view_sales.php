@@ -25,6 +25,11 @@ if (!$sales) {
     echo "No sales found.";
     exit();
 }
+
+$subtotal = 0;
+foreach ($sales as $sale) {
+    $subtotal += $sale['total_price'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -58,11 +63,16 @@ if (!$sales) {
                 <td>
                     <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                         <input type="hidden" name="delete_id" value="<?php echo $sale['id']; ?>">
-                        <button type="submit" style="background-color: #5cb85c; color: white; border: none; padding: 5px 10px; border-radius: 4px;">Delete</button>
+                        <button type="submit" style="background-color: #d9534f; color: white; border: none; padding: 5px 10px; border-radius: 4px;">Delete</button>
                     </form>
                 </td>
             </tr>
         <?php endforeach; ?>
+        <tr>
+            <td colspan="3"></td>
+            <td><strong>Total Earning: <?php echo htmlspecialchars($subtotal); ?></strong></td>
+            <td colspan="2"></td>
+        </tr>
     </table>
     <a href="dashboard.php">Back to Dashboard</a>
 </div>
