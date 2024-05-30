@@ -10,9 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     $delete_id = $_POST['delete_id'];
 
-    // Check if the user selected to delete the entire product or specify a quantity
     if (isset($_POST['delete_option']) && $_POST['delete_option'] === 'whole') {
-        // Delete the product entirely
         $pdo->beginTransaction();
         try {
             $stmt = $pdo->prepare('DELETE FROM inventory WHERE product_id = ?');
@@ -31,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             exit();
         }
     } elseif (isset($_POST['delete_option']) && $_POST['delete_option'] === 'quantity') {
-        // Delete a specific quantity of the product
         if (!isset($_POST['quantity']) || !is_numeric($_POST['quantity'])) {
             echo "Invalid quantity specified.";
             exit();
@@ -39,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
 
         $delete_quantity = intval($_POST['quantity']);
 
-        // Get the current stock of the product
         $stmt = $pdo->prepare('SELECT stock FROM products WHERE id = ?');
         $stmt->execute([$delete_id]);
         $product = $stmt->fetch();
@@ -56,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             exit();
         }
 
-        // Update the stock of the product
         $new_stock = $current_stock - $delete_quantity;
         $stmt = $pdo->prepare('UPDATE products SET stock = ? WHERE id = ?');
         $stmt->execute([$new_stock, $delete_id]);
@@ -66,12 +61,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     exit();
 }
 
-$stmt = $pdo->query('
+// Pagination setup
+$products_per_page = 9;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $products_per_page;
+
+$total_products_stmt = $pdo->query('SELECT COUNT(*) FROM products');
+$total_products = $total_products_stmt->fetchColumn();
+$total_pages = ceil($total_products / $products_per_page);
+
+$stmt = $pdo->prepare('
     SELECT products.*, categories.name AS category_name, subcategories.name AS subcategory_name
     FROM products
     LEFT JOIN categories ON products.category_id = categories.id
     LEFT JOIN subcategories ON products.subcategory_id = subcategories.id
+    LIMIT :offset, :products_per_page
 ');
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->bindValue(':products_per_page', $products_per_page, PDO::PARAM_INT);
+$stmt->execute();
 $products = $stmt->fetchAll();
 
 if (!$products) {
@@ -80,17 +88,15 @@ if (!$products) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>View Products</title>
     <link rel="stylesheet" type="text/css" href="../public/css/viewProduct.css">
-</head>
+    <link rel="stylesheet" type="text/css" href="../public/css/viewP.css">
 
+</head>
 <body>
-    <!-- Your PHP code and HTML content goes here -->
     <?php include('../includes/sidebar.php'); ?>
     <div class="content">
         <h1>Products</h1>
@@ -105,7 +111,6 @@ if (!$products) {
                 <th>Subcategory</th>
                 <th>Action</th>
             </tr>
-            <!-- PHP loop to display product data -->
             <?php foreach ($products as $product) : ?>
                 <tr>
                     <td><?php echo htmlspecialchars($product['id']); ?></td>
@@ -116,30 +121,42 @@ if (!$products) {
                     <td><?php echo htmlspecialchars($product['category_name']); ?></td>
                     <td><?php echo htmlspecialchars($product['subcategory_name']); ?></td>
                     <td>
-                        <br>
                         <div class="button-group">
                             <a href="edit_product.php?id=<?php echo $product['id']; ?>" style="background-color: #5cb85c; color: white; text-align: center; padding: 5px 10px; border-radius: 4px;">Edit</a>
-                            <br>
-                            <br>
+                            <br><br>
                             <?php if ($role !== 'editor') : ?>
                                 <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                                     <input type="hidden" name="delete_id" value="<?php echo $product['id']; ?>">
-                                    <select style="   width: 40%; padding: 8px; margin-bottom: 15px;border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;resize: vertical;" name="delete_option">
+                                    <select name="delete_option" style="width: 40%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; resize: vertical;">
                                         <option value="whole">Delete Entire Product</option>
                                         <option value="quantity">Delete Specific Quantity</option>
                                     </select>
-                                    <input min="0" style="   width: 20%; padding: 8px; margin-bottom: 15px;border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;resize: vertical;" type="number" name="quantity" placeholder="Quantity">
-                                    <button style=" background-color: #6BA9B9; color: white; padding: 10px 20px; border: none;border-radius: 4px;cursor: pointer; transition: background-color 0.3s, color 0.3s;" type="submit">Delete</button>
+                                    <input type="number" name="quantity" min="0" placeholder="Quantity" style="width: 20%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; resize: vertical;">
+                                    <button type="submit" style="background-color: #6BA9B9; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s, color 0.3s;">Delete</button>
                                 </form>
-
                             <?php endif ?>
                         </div>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </table>
+        
+        <!-- Pagination Links -->
+        <div class="pagination">
+            <?php if ($page > 1): ?>
+                <a href="?page=<?php echo $page - 1; ?>">&laquo; Previous</a>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="active"'; ?>><?php echo $i; ?></a>
+            <?php endfor; ?>
+
+            <?php if ($page < $total_pages): ?>
+                <a href="?page=<?php echo $page + 1; ?>">Next &raquo;</a>
+            <?php endif; ?>
+        </div>
+
         <a href="dashboard.php">Back to Dashboard</a>
     </div>
 </body>
-
 </html>

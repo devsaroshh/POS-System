@@ -7,6 +7,12 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$user_id = $_SESSION['user_id'];
+$stmt = $pdo->prepare('SELECT role FROM users WHERE id = ?');
+$stmt->execute([$user_id]);
+$user = $stmt->fetch();
+$role = $user['role'] ?? '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     $delete_id = $_POST['delete_id'];
 
@@ -17,9 +23,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     exit();
 }
 
-$stmt = $pdo->query('SELECT i.id, p.name AS product_name, i.change_type, i.quantity, i.change_date
-                     FROM inventory i
-                     JOIN products p ON i.product_id = p.id');
+$inventory_per_page = 9;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $inventory_per_page;
+
+$total_inventory_stmt = $pdo->query('SELECT COUNT(*) FROM inventory');
+$total_inventory = $total_inventory_stmt->fetchColumn();
+$total_pages = ceil($total_inventory / $inventory_per_page);
+
+$stmt = $pdo->prepare('SELECT i.id, p.name AS product_name, i.change_type, i.quantity, i.change_date
+                       FROM inventory i
+                       JOIN products p ON i.product_id = p.id
+                       LIMIT :offset, :inventory_per_page');
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->bindValue(':inventory_per_page', $inventory_per_page, PDO::PARAM_INT);
+$stmt->execute();
 $inventory_changes = $stmt->fetchAll();
 ?>
 
@@ -29,6 +47,8 @@ $inventory_changes = $stmt->fetchAll();
 <head>
     <title>View Inventory</title>
     <link rel="stylesheet" type="text/css" href="../public/css/viewProduct.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/viewP.css">
+
 </head>
 
 <body>
@@ -44,7 +64,7 @@ $inventory_changes = $stmt->fetchAll();
             <th>Change Date</th>
             <?php if ($role !== 'editor'): ?>
             <th>Action</th>
-            <?php endif?>
+            <?php endif ?>
         </tr>
         <?php foreach ($inventory_changes as $change) : ?>
             <tr>
@@ -60,11 +80,26 @@ $inventory_changes = $stmt->fetchAll();
                         <button type="submit" style="background-color: #5cb85c; color: white; border: none; padding: 5px 10px; border-radius: 4px;">Delete</button>
                     </form>
                 </td>
-                <?php endif?>
-
+                <?php endif ?>
             </tr>
         <?php endforeach; ?>
     </table>
+
+    <!-- Pagination Links -->
+    <div class="pagination">
+        <?php if ($page > 1): ?>
+            <a href="?page=<?php echo $page - 1; ?>">&laquo; Previous</a>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="active"'; ?>><?php echo $i; ?></a>
+        <?php endfor; ?>
+
+        <?php if ($page < $total_pages): ?>
+            <a href="?page=<?php echo $page + 1; ?>">Next &raquo;</a>
+        <?php endif; ?>
+    </div>
+
     <a href="dashboard.php">Back to Dashboard</a>
 </div>
 </body>

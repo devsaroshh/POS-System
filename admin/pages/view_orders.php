@@ -12,10 +12,23 @@ $stmt = $pdo->prepare('SELECT role FROM users WHERE id = ?');
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 $role = $user['role'] ?? '';
-$stmt = $pdo->query('SELECT orders.id, products.name AS product_name, order_items.quantity, order_items.price AS total_price, orders.status, orders.created_at 
-                     FROM orders 
-                     JOIN order_items ON orders.id = order_items.order_id
-                     JOIN products ON order_items.product_id = products.id');
+
+$orders_per_page = 9; 
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $orders_per_page;
+
+$total_orders_stmt = $pdo->query('SELECT COUNT(*) FROM orders');
+$total_orders = $total_orders_stmt->fetchColumn();
+$total_pages = ceil($total_orders / $orders_per_page);
+
+$stmt = $pdo->prepare('SELECT orders.id, products.name AS product_name, order_items.quantity, order_items.price AS total_price, orders.status, orders.created_at 
+                       FROM orders 
+                       JOIN order_items ON orders.id = order_items.order_id
+                       JOIN products ON order_items.product_id = products.id
+                       LIMIT :offset, :orders_per_page');
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->bindValue(':orders_per_page', $orders_per_page, PDO::PARAM_INT);
+$stmt->execute();
 $orders = $stmt->fetchAll();
 
 ?>
@@ -25,6 +38,8 @@ $orders = $stmt->fetchAll();
 <head>
     <title>View Orders</title>
     <link rel="stylesheet" type="text/css" href="../public/css/viewProduct.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/viewP.css">
+
 </head>
 <body>
 <?php include('../includes/sidebar.php'); ?>
@@ -41,9 +56,9 @@ $orders = $stmt->fetchAll();
             <th>Action</th>
         </tr>
         <?php 
-        $totalEarned = 0; // Initialize total earned variable
+        $totalEarned = 0; 
         foreach ($orders as $order): 
-            $totalEarned += $order['total_price']; // Add total price of each order to total earned
+            $totalEarned += $order['total_price']; 
         ?>
             <tr>
                 <td><?php echo htmlspecialchars($order['id']); ?></td>
@@ -70,9 +85,24 @@ $orders = $stmt->fetchAll();
             <td>Total Earned: $<?php echo htmlspecialchars($totalEarned); ?></td>
             <td></td>
             <td></td>
-
         </tr>
     </table>
+
+    <!-- Pagination Links -->
+    <div class="pagination">
+        <?php if ($page > 1): ?>
+            <a href="?page=<?php echo $page - 1; ?>">&laquo; Previous</a>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="active"'; ?>><?php echo $i; ?></a>
+        <?php endfor; ?>
+
+        <?php if ($page < $total_pages): ?>
+            <a href="?page=<?php echo $page + 1; ?>">Next &raquo;</a>
+        <?php endif; ?>
+    </div>
+
     <a href="dashboard.php">Back to Dashboard</a>
 </div>
 </body>

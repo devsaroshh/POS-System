@@ -16,7 +16,6 @@ $role = $user['role'] ?? '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && $role !== 'editor') {
     $delete_id = $_POST['delete_id'];
 
-    // Check if there are any products associated with the subcategory
     $stmt = $pdo->prepare('SELECT COUNT(*) FROM products WHERE subcategory_id = ?');
     $stmt->execute([$delete_id]);
     $products_count = $stmt->fetchColumn();
@@ -34,11 +33,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && $role
     exit();
 }
 
-$stmt = $pdo->query('
+// Pagination setup
+$subcategories_per_page = 10; // Number of subcategories to show per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $subcategories_per_page;
+
+$total_subcategories_stmt = $pdo->query('SELECT COUNT(*) FROM subcategories');
+$total_subcategories = $total_subcategories_stmt->fetchColumn();
+$total_pages = ceil($total_subcategories / $subcategories_per_page);
+
+$stmt = $pdo->prepare('
     SELECT subcategories.*, categories.name AS category_name
     FROM subcategories
     JOIN categories ON subcategories.category_id = categories.id
+    LIMIT :offset, :subcategories_per_page
 ');
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->bindValue(':subcategories_per_page', $subcategories_per_page, PDO::PARAM_INT);
+$stmt->execute();
 $subcategories = $stmt->fetchAll();
 ?>
 
@@ -47,6 +59,8 @@ $subcategories = $stmt->fetchAll();
 <head>
     <title>View Subcategories</title>
     <link rel="stylesheet" type="text/css" href="../public/css/viewSubcategory.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/viewP.css">
+
 </head>
 <body>
 <?php include('../includes/sidebar.php'); ?>
@@ -72,12 +86,28 @@ $subcategories = $stmt->fetchAll();
                             <input type="hidden" name="delete_id" value="<?php echo $subcategory['id']; ?>">
                             <button type="submit" style="background-color: #d9534f; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button>
                         </form>
-                        <?php endif?>
+                        <?php endif; ?>
                     </div>
                 </td>
             </tr>
         <?php endforeach; ?>
     </table>
+
+    <!-- Pagination Links -->
+    <div class="pagination">
+        <?php if ($page > 1): ?>
+            <a href="?page=<?php echo $page - 1; ?>">&laquo; Previous</a>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="active"'; ?>><?php echo $i; ?></a>
+        <?php endfor; ?>
+
+        <?php if ($page < $total_pages): ?>
+            <a href="?page=<?php echo $page + 1; ?>">Next &raquo;</a>
+        <?php endif; ?>
+    </div>
+
     <a href="dashboard.php">Back to Dashboard</a>
 </div>
 </body>

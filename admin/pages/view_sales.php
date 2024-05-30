@@ -16,9 +16,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     exit();
 }
 
-$stmt = $pdo->query('SELECT s.id, p.name AS product_name, s.quantity, s.total_price, s.sale_date 
-                     FROM sales s
-                     JOIN products p ON s.product_id = p.id');
+// Pagination setup
+$sales_per_page = 9;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $sales_per_page;
+
+$total_sales_stmt = $pdo->query('SELECT COUNT(*) FROM sales');
+$total_sales = $total_sales_stmt->fetchColumn();
+$total_pages = ceil($total_sales / $sales_per_page);
+
+$stmt = $pdo->prepare('
+    SELECT s.id, p.name AS product_name, s.quantity, s.total_price, s.sale_date 
+    FROM sales s
+    JOIN products p ON s.product_id = p.id
+    LIMIT :offset, :sales_per_page
+');
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->bindValue(':sales_per_page', $sales_per_page, PDO::PARAM_INT);
+$stmt->execute();
 $sales = $stmt->fetchAll();
 
 if (!$sales) {
@@ -31,13 +46,14 @@ foreach ($sales as $sale) {
     $subtotal += $sale['total_price'];
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 
 <head>
     <title>View Sales</title>
     <link rel="stylesheet" type="text/css" href="../public/css/viewProduct.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/viewP.css">
+
 </head>
 
 <body>
@@ -74,6 +90,22 @@ foreach ($sales as $sale) {
             <td colspan="2"></td>
         </tr>
     </table>
+
+    <!-- Pagination Links -->
+    <div class="pagination">
+        <?php if ($page > 1): ?>
+            <a href="?page=<?php echo $page - 1; ?>">&laquo; Previous</a>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="active"'; ?>><?php echo $i; ?></a>
+        <?php endfor; ?>
+
+        <?php if ($page < $total_pages): ?>
+            <a href="?page=<?php echo $page + 1; ?>">Next &raquo;</a>
+        <?php endif; ?>
+    </div>
+
     <a href="dashboard.php">Back to Dashboard</a>
 </div>
 </body>

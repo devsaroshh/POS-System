@@ -16,12 +16,10 @@ $role = $user['role'] ?? '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && $role !== 'editor') {
     $delete_id = $_POST['delete_id'];
 
-    // Check if there are any subcategories associated with the category
     $stmt = $pdo->prepare('SELECT COUNT(*) FROM subcategories WHERE category_id = ?');
     $stmt->execute([$delete_id]);
     $subcategories_count = $stmt->fetchColumn();
 
-    // Check if there are any products associated with the category
     $stmt = $pdo->prepare('SELECT COUNT(*) FROM products WHERE category_id = ?');
     $stmt->execute([$delete_id]);
     $products_count = $stmt->fetchColumn();
@@ -31,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && $role
         exit();
     }
 
-    // Proceed with deletion if there are no associated subcategories or products
     $pdo->beginTransaction();
 
     try {
@@ -49,16 +46,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id']) && $role
     exit();
 }
 
-$stmt = $pdo->query('SELECT * FROM categories');
+// Pagination setup
+$categories_per_page = 9;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $categories_per_page;
+
+$total_categories_stmt = $pdo->query('SELECT COUNT(*) FROM categories');
+$total_categories = $total_categories_stmt->fetchColumn();
+$total_pages = ceil($total_categories / $categories_per_page);
+
+$stmt = $pdo->prepare('SELECT * FROM categories LIMIT :offset, :categories_per_page');
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->bindValue(':categories_per_page', $categories_per_page, PDO::PARAM_INT);
+$stmt->execute();
 $categories = $stmt->fetchAll();
 ?>
-
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>View Categories</title>
     <link rel="stylesheet" type="text/css" href="../public/css/viewCategories.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/viewP.css">
+
 </head>
 <body>
 <?php include('../includes/sidebar.php'); ?>
@@ -88,6 +98,22 @@ $categories = $stmt->fetchAll();
             </tr>
         <?php endforeach; ?>
     </table>
+
+    <!-- Pagination Links -->
+    <div class="pagination">
+        <?php if ($page > 1): ?>
+            <a href="?page=<?php echo $page - 1; ?>">&laquo; Previous</a>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="active"'; ?>><?php echo $i; ?></a>
+        <?php endfor; ?>
+
+        <?php if ($page < $total_pages): ?>
+            <a href="?page=<?php echo $page + 1; ?>">Next &raquo;</a>
+        <?php endif; ?>
+    </div>
+
     <a href="dashboard.php">Back to Dashboard</a>
 </div>
 </body>
