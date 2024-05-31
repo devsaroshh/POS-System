@@ -4,11 +4,14 @@ POS System
 The POS System is a web-based Point of Sale (POS) application developed using PHP. It offers a complete solution for managing sales, inventory, and user management for businesses.
 ## Installation
 Clone the Repository:
+
 git clone https://github.com/devsaroshh/devsaroshh.git
+
 Database Setup:
 
 Import the database schema from pos_system.sql to set up the necessary tables and structure.
 Configure the database connection in config.php to connect the application to your database.
+
 Deploy to Web Server:
 
 Upload the project files to your web server to make the POS system accessible via the web.
