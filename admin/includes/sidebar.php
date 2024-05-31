@@ -57,7 +57,6 @@
         .dropdown {
             position: relative;
             display: block;
-            /* Make dropdown a block element */
         }
 
         .dropdown-content {
@@ -182,20 +181,20 @@
     <?php } elseif ($role === 'editor') { ?>
         <div class="sidebar">
             <h2 style="color: white; text-align:center">Welcome</h2>
+            <!-- <div class="dropdown">
+                <button class="dropbtn">User Management</button>
+                <div class="dropdown-content">
+                    <a href="userManagement.php">Add User</a>
+                </div>
+            </div> -->
             <div class="dropdown">
                 <button class="dropbtn">Manage Products</button>
                 <div class="dropdown-content">
-                    <a href="view_products.php">Edit Products</a>
-                    <!-- <a href="view_products.php">View Products</a> -->
+                    <!-- <a href="add_product.php">Add New Product</a> -->
+                    <a href="view_products.php">View Products</a>
                 </div>
             </div>
-            <div class="dropdown">
-                <button class="dropbtn">Manage Orders</button>
-                <div class="dropdown-content">
-                    <!-- <a href="add_order.php">Add Order</a> -->
-                    <a href="view_orders.php">Edit Orders</a>
-                </div>
-            </div>
+
             <div class="dropdown">
                 <button class="dropbtn">Sales</button>
                 <div class="dropdown-content">
@@ -213,17 +212,31 @@
             <div class="dropdown">
                 <button class="dropbtn">Categories</button>
                 <div class="dropdown-content">
-                    <!-- <a href="add_category.php">Edit Category</a> -->
-                    <a href="view_categories.php">Edit Category</a>
+                    <a href="add_category.php">Add New Category</a>
+                    <a href="view_categories.php">View Categories</a>
                 </div>
             </div>
             <div class="dropdown">
                 <button class="dropbtn">Subcategories</button>
                 <div class="dropdown-content">
-                    <!-- <a href="edit_subcategory.php">Edit Subcategory</a> -->
-                    <a href="view_subcategories.php">Edit Subcategory</a>
+                    <a href="add_subcategory.php">Add New Subcategory</a>
+                    <a href="view_subcategories.php">View Subcategories</a>
                 </div>
             </div>
+            <div class="dropdown">
+                <button class="dropbtn">Manage Orders</button>
+                <div class="dropdown-content">
+                    <!-- <a href="add_order.php">Add Order</a> -->
+                    <a href="view_orders.php">View Orders</a>
+                </div>
+            </div>
+            <div class="dropdown">
+        <button class="dropbtn">Alerts</button>
+        <div class="dropdown-content">
+            <a href="alerts.php">View Alerts</a>
+        </div>
+    </div>
+
             <a href="logout.php" id="logout">Logout</a>
         </div>
     <?php } ?>
