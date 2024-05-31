@@ -18,7 +18,11 @@ Upload the project files to your web server to make the POS system accessible vi
 ## Usage
 ## Admin Panel:
 
-Access the admin panel by navigating to localhost/pos/admin.username:admin;password:admin123.
+Access the admin panel by navigating to localhost/pos/admin.
+
+username:admin.
+password:admin123.
+
 Log in with admin credentials to access advanced functionalities.
 Manage users, roles, orders, sales, products, and inventory seamlessly from the admin dashboard.
 
