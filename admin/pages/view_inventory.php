@@ -16,8 +16,17 @@ $role = $user['role'] ?? '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     $delete_id = $_POST['delete_id'];
 
+    $stmt = $pdo->prepare('SELECT p.name FROM inventory i JOIN products p ON i.product_id = p.id WHERE i.id = ?');
+    $stmt->execute([$delete_id]);
+    $product = $stmt->fetch();
+
     $stmt = $pdo->prepare('DELETE FROM inventory WHERE id = ?');
     $stmt->execute([$delete_id]);
+
+    if ($product) {
+        $stmt = $pdo->prepare('INSERT INTO notifications (user_id, message, is_read, created_at) VALUES (?, ?, 0, NOW())');
+        $stmt->execute([$user_id, 'Product "' . htmlspecialchars($product['name']) . '" is out of stock']);
+    }
 
     header('Location: view_inventory.php');
     exit();
@@ -48,7 +57,6 @@ $inventory_changes = $stmt->fetchAll();
     <title>View Inventory</title>
     <link rel="stylesheet" type="text/css" href="../public/css/viewProduct.css">
     <link rel="stylesheet" type="text/css" href="../public/css/viewP.css">
-
 </head>
 
 <body>
@@ -77,7 +85,7 @@ $inventory_changes = $stmt->fetchAll();
                 <td>
                     <form method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
                         <input type="hidden" name="delete_id" value="<?php echo $change['id']; ?>">
-                        <button type="submit" style="background-color: #5cb85c; color: white; border: none; padding: 5px 10px; border-radius: 4px;">Delete</button>
+                        <button type="submit" style="background-color: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px;">Delete</button>
                     </form>
                 </td>
                 <?php endif ?>

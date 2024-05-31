@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,54 +8,56 @@
     <style>
         .sidebar {
             height: 100%;
-            width: 250px; 
+            width: 250px;
             position: fixed;
             top: 0;
             left: 0;
-            background-color:  #6BA9B9;
+            background-color: #6BA9B9;
             padding-top: 20px;
-            overflow-y: auto; 
+            overflow-y: auto;
         }
 
         .sidebar a {
             padding: 10px;
             text-decoration: none;
             font-size: 18px;
-            color: #6BA9B9; 
+            color: #6BA9B9;
             display: block;
-            background-color: #6BA9B9; 
+            background-color: #6BA9B9;
         }
 
         .sidebar a:hover,
         .sidebar a:focus {
-            background-color: #6BA9B9; 
-            color: white; 
+            background-color: #6BA9B9;
+            color: white;
         }
 
         .sidebar a:active {
-            background-color: #6BA9B9; 
-            color: white; 
+            background-color: #6BA9B9;
+            color: white;
         }
 
         .content {
-            margin-left: 250px; 
+            margin-left: 250px;
             padding: 16px;
         }
 
         .dropbtn {
-            background-color: #6BA9B9; 
-            color: white; 
+            background-color: #6BA9B9;
+            color: white;
             padding: 16px;
             font-size: 16px;
             border: none;
             cursor: pointer;
-            width: 100%; 
-            text-align: left; /* Align text to the left */
+            width: 100%;
+            text-align: left;
+            /* Align text to the left */
         }
 
         .dropdown {
             position: relative;
-            display: block; /* Make dropdown a block element */
+            display: block;
+            /* Make dropdown a block element */
         }
 
         .dropdown-content {
@@ -62,10 +65,10 @@
             position: absolute;
             background-color: #f9f9f9;
             min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
             z-index: 1;
-            width: 100%; 
-            text-align: left; 
+            width: 100%;
+            text-align: left;
         }
 
         .dropdown-content a {
@@ -82,7 +85,8 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
-        #logout{
+
+        #logout {
             color: white;
             padding: 12px 16px;
             text-decoration: none;
@@ -91,6 +95,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <?php
@@ -129,7 +134,7 @@
                     <a href="view_products.php">View Products</a>
                 </div>
             </div>
-            
+
             <div class="dropdown">
                 <button class="dropbtn">Sales</button>
                 <div class="dropdown-content">
@@ -161,16 +166,17 @@
             <div class="dropdown">
                 <button class="dropbtn">Manage Orders</button>
                 <div class="dropdown-content">
-                <!-- <a href="add_order.php">Add Order</a> -->
+                    <!-- <a href="add_order.php">Add Order</a> -->
                     <a href="view_orders.php">View Orders</a>
                 </div>
             </div>
             <div class="dropdown">
-                <button class="dropbtn">Alerts</button>
-                <div class="dropdown-content">
-                    <a href="view_orders.php">View Orders</a>
-                </div>
-            </div>
+        <button class="dropbtn">Alerts</button>
+        <div class="dropdown-content">
+            <a href="alerts.php">View Alerts</a>
+        </div>
+    </div>
+
             <a href="logout.php" id="logout">Logout</a>
         </div>
     <?php } elseif ($role === 'editor') { ?>
@@ -186,7 +192,7 @@
             <div class="dropdown">
                 <button class="dropbtn">Manage Orders</button>
                 <div class="dropdown-content">
-                <!-- <a href="add_order.php">Add Order</a> -->
+                    <!-- <a href="add_order.php">Add Order</a> -->
                     <a href="view_orders.php">Edit Orders</a>
                 </div>
             </div>

@@ -26,11 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare('UPDATE orders SET status = ? WHERE id = ?');
     $stmt->execute([$status, $order_id]);
 
+    $stmt = $pdo->prepare('INSERT INTO notifications (user_id, message, is_read, created_at) VALUES (?, ?, 0, NOW())');
+    $stmt->execute([$_SESSION['user_id'], 'Order ID ' . $order_id . ' status updated to ' . $status]);
+
     header('Location: view_orders.php');
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -44,8 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h1>Edit Order</h1>
     <form method="POST">
         <input type="hidden" name="id" value="<?php echo $order['id']; ?>">
-        <label  style="color:#6BA9B9;"  for="status">Status</label>
-        <select style="   width: 50%; padding: 8px; margin-bottom: 15px;border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;resize: vertical;"  name="status" id="status">
+        <label style="color:#6BA9B9;" for="status">Status</label>
+        <select style="width: 50%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; resize: vertical;" name="status" id="status">
             <option value="Pending" <?php echo $order['status'] == 'Pending' ? 'selected' : ''; ?>>Pending</option>
             <option value="completed" <?php echo $order['status'] == 'completed' ? 'selected' : ''; ?>>completed</option>
             <option value="cancelled" <?php echo $order['status'] == 'cancelled' ? 'selected' : ''; ?>>cancelled</option>
