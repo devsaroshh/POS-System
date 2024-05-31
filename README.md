@@ -1,6 +1,6 @@
-# Project Name
+# POS System
 
-POS System
+
 The POS System is a web-based Point of Sale (POS) application developed using PHP. It offers a complete solution for managing sales, inventory, and user management for businesses.
 ## Installation
 Clone the Repository:
