@@ -5,7 +5,7 @@ The POS System is a web-based Point of Sale (POS) application developed using PH
 ## Installation
 Clone the Repository:
 
-git clone https://github.com/devsaroshh/devsaroshh.git
+git clone https://github.com/devsaroshh/POS-System    
 
 Database Setup:
 
